@@ -10,11 +10,9 @@ import io.lettuce.core.RedisClient;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.cfg.Environment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import static java.util.Objects.nonNull;
 
@@ -34,24 +32,12 @@ public class Main {
     }
 
     private SessionFactory prepareRelationalDb() {
-        final SessionFactory sessionFactory;
-        Properties properties = new Properties();
-        properties.put(Environment.DIALECT, "org.hibernate.dialect.MySQL8Dialect");
-        properties.put(Environment.DRIVER, "com.p6spy.engine.spy.P6SpyDriver");
-        properties.put(Environment.URL, "jdbc:p6spy:mysql://localhost:3306/world");
-        properties.put(Environment.USER, "root");
-        properties.put(Environment.PASS, "mysql");
-        properties.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-        properties.put(Environment.HBM2DDL_AUTO, "validate");
-        properties.put(Environment.STATEMENT_BATCH_SIZE, "100");
-
-        sessionFactory = new Configuration()
-                .addAnnotatedClass(City.class)
+        return new Configuration()
+                .configure("hibernate.cfg.xml")
                 .addAnnotatedClass(Country.class)
                 .addAnnotatedClass(Language.class)
-                .addProperties(properties)
+                .addAnnotatedClass(City.class)
                 .buildSessionFactory();
-        return sessionFactory;
     }
 
     private RedisClient prepareRedisClient() {
@@ -71,6 +57,8 @@ public class Main {
         try (Session session = main.sessionFactory.getCurrentSession()) {
             List<City> allCities = new ArrayList<>();
             session.beginTransaction();
+
+            List<Country> countries = main.countryDAO.getAll();
 
             int totalCount = main.cityDAO.getTotalCount();
             int step = 500;

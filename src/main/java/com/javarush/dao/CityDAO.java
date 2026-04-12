@@ -17,9 +17,6 @@ public class CityDAO {
         Query<City> query = sessionFactory.getCurrentSession().createQuery(
                 "select c from City c",
                 City.class);
-//        Query<City> query = sessionFactory.getCurrentSession().createQuery(
-//                "SELECT c FROM City c JOIN FETCH c.country",
-//                City.class);
         query.setFirstResult(offset);
         query.setMaxResults(limit);
         return query.list();
