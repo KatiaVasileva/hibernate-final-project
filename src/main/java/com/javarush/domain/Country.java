@@ -70,5 +70,5 @@ public class Country {
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "country_id")
-    private Set<Language> languages;
+    private Set<CountryLanguage> languages;
 }

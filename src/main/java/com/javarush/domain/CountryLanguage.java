@@ -15,7 +15,7 @@ import java.sql.Types;
 
 @Entity
 @Table(schema = "world", name = "country_language")
-public class Language {
+public class CountryLanguage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
