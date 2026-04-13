@@ -2,20 +2,20 @@ package com.javarush.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 
 import java.math.BigDecimal;
+import java.sql.Types;
 
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 
 @Entity
 @Table(schema = "world", name = "country_language")
-public class Language {
+public class CountryLanguage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -27,8 +27,9 @@ public class Language {
     @Column(nullable = false, length = 30)
     private String language;
 
-    @Column(name = "is_official", nullable = false, columnDefinition = "TINYINT(1)")
-    private boolean isOfficial = false;
+    @Column(name = "is_official")
+    @JdbcTypeCode(Types.BIT)
+    private Boolean isOfficial;
 
     @Column(nullable = false, precision = 4, scale = 1)
     private BigDecimal percentage;

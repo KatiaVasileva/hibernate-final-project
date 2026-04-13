@@ -2,15 +2,14 @@ package com.javarush.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
+import java.sql.Types;
 import java.util.Set;
 
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -31,9 +30,9 @@ public class Country {
     @Column(nullable = false, length = 52)
     private String name;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.ORDINAL)
-    private int continent;
+    @JdbcTypeCode(Types.INTEGER)
+    private Continent continent;
 
     @Column(nullable = false, length = 26)
     private String region;
@@ -65,11 +64,11 @@ public class Country {
     @Column(name = "head_of_state", length = 60)
     private String headOfState;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "capital")
     private City city;
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "country_id")
-    private Set<Language> languages = new HashSet<>();
+    private Set<CountryLanguage> languages;
 }
