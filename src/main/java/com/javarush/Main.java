@@ -13,16 +13,19 @@ import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisStringCommands;
+import lombok.SneakyThrows;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+
 
 public class Main {
     private final SessionFactory sessionFactory;
@@ -39,18 +42,22 @@ public class Main {
         countryDAO = new CountryDAO(sessionFactory);
     }
 
+    @SneakyThrows
     private SessionFactory prepareRelationalDb() {
-        return new Configuration()
-                .configure("hibernate.cfg.xml")
-                .addAnnotatedClass(Country.class)
-                .addAnnotatedClass(CountryLanguage.class)
-                .addAnnotatedClass(City.class)
-                .buildSessionFactory();
+        Configuration config = new Configuration();
+        Properties properties = config.getProperties();
+        properties.load(SessionFactory.class.getResourceAsStream(
+                "/application.properties"));
+        config.addProperties(properties);
+        config.addAnnotatedClass(Country.class);
+        config.addAnnotatedClass(CountryLanguage.class);
+        config.addAnnotatedClass(City.class);
+        return config.buildSessionFactory();
     }
 
     private RedisClient prepareRedisClient() {
         RedisClient redisClient = RedisClient.create(RedisURI.create("localhost", 6379));
-        try (StatefulRedisConnection<String, String> connection = redisClient.connect()) {
+        try (StatefulRedisConnection<String, String> connection = redisClient.  connect()) {
             System.out.println("\nConnected to Redis\n");
         }
         return redisClient;
