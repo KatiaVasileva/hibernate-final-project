@@ -2,6 +2,7 @@ package com.javarush;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.javarush.config.ApplicationProperties;
 import com.javarush.dao.CityDAO;
 import com.javarush.dao.CountryDAO;
 import com.javarush.domain.City;
@@ -20,7 +21,6 @@ import org.hibernate.cfg.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,10 +44,7 @@ public class Main {
     @SneakyThrows
     private SessionFactory prepareRelationalDb() {
         Configuration config = new Configuration();
-        Properties properties = config.getProperties();
-        properties.load(SessionFactory.class.getResourceAsStream(
-                "/application.properties"));
-        config.addProperties(properties);
+        config.addProperties(new ApplicationProperties());
         config.addAnnotatedClass(Country.class);
         config.addAnnotatedClass(CountryLanguage.class);
         config.addAnnotatedClass(City.class);
